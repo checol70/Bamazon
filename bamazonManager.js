@@ -82,7 +82,7 @@ function addInv() {
                 message: "What is the id of the item you want to add",
                 type: "input",
                 validate: function (e) {
-                    return (parseInt(e) !== NaN && parseInt(e) > 0 && parseInt(e) < res.length - 1);
+                    return (parseInt(e) !== NaN && parseInt(e) > 0 && parseInt(e) <= res.length);
                 }
             }, {
                 name: "quan",
@@ -95,7 +95,7 @@ function addInv() {
         ]).then(function (r) {
             var p = r.id;
             var s = parseInt(r.quan);
-            var q = res[p].stock_quantity
+            var q = res[p - 1].stock_quantity
             connection.query(
                 "UPDATE products SET stock_quantity = ? WHERE id = ?", [s + q, p], function (err, res) {
                     if (err) return console.log(err);
@@ -132,7 +132,6 @@ function addProduct() {
         }
     ]).then(function(r){
         var query = connection.query("INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES (?,?,?,?)", [r.name, r.dep, r.price, r.quan], function (err, res) {
-            console.log(query.sql)
             if (err) return console.log(err);
             console.log("Successfully added product: " + r.name);
             options();
